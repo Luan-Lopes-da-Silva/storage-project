@@ -1,12 +1,25 @@
 'use client'
 
-import { ButtonHTMLAttributes, FocusEvent, useState } from "react"
+import { FormEvent, useState } from "react"
 
 export default function Page(){
-    const[prohibited,setProhibited] = useState('')
+    const[prohibited,setProhibited] = useState('s')
     const[withdrawal,setWithdrawal] = useState('')
     const[query,setQuery] = useState('')
     const[layout,setLayout] = useState('')
+
+    async function registerProduct(ev:FormEvent) {
+    ev.preventDefault()  
+    }
+
+    async function withdrawalProduct(ev:FormEvent) {
+    ev.preventDefault()     
+    }
+
+    async function queryProduct(ev:FormEvent) {
+    ev.preventDefault()    
+    }
+
 
     function checkTab(ev:any) {
     if(ev.currentTarget.innerText === 'ENTRADA DE PRODUTO') {
@@ -31,6 +44,7 @@ export default function Page(){
         setLayout(ev.currentTarget.innerText)
     }
     }
+
     return(
         <>
         <div>
@@ -41,25 +55,53 @@ export default function Page(){
         </div>
 
         {prohibited!==''?(
-        <div><h1>Entrada</h1></div>
+        <div>
+            <form onSubmit={(ev)=>registerProduct(ev)}>
+            <label htmlFor="">Nome Produto</label>
+            <input type="text" />
+            <label htmlFor="">Lote Produto</label>
+            <input type="text" />
+            <label htmlFor="">Data de Validade</label>
+            <input type="date" />
+            <label htmlFor="">Quantidade</label>
+            <input type="number" name="" id="" />
+            <button>REGISTRAR PRODUTO</button>
+            </form>
+        </div>
         ):(
         <div><h1></h1></div>
         )}
 
         {withdrawal!==''?(
-        <div><h1>Retirada</h1></div>
+        <div>
+            <form onSubmit={(ev)=>withdrawalProduct(ev)}>
+            <label htmlFor="">Lote do Produto</label>
+            <input type="text" />
+            <label htmlFor="">Quantidade do produto</label>
+            <input type="number" />
+            <label htmlFor="">Responsavel pela retirada</label>
+            <input type="text" />
+            <button>RETIRAR</button>
+            </form>
+        </div>
         ):(
         <div><h1></h1></div>
         )}
 
         {query!==''?(
-        <div><h1>Consulta</h1></div>
+        <div>
+            <form onSubmit={(ev)=>queryProduct(ev)}>
+                <label htmlFor="">Lote do produto</label>
+                <input type="text" />
+                <button>CONSULTAR</button>
+            </form>
+        </div>
         ):(
         <div><h1></h1></div>
         )}
 
         {layout!==''?(
-        <div><h1>Consulta de layout</h1></div>
+        <div><h1>DESENHO DO ESTOQUE</h1></div>
         ):(
         <div><h1></h1></div>
         )}
