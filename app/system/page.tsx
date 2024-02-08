@@ -1,15 +1,51 @@
 'use client'
 
-import { FormEvent, useState } from "react"
+import { FormEvent, useRef, useState } from "react"
+import GetLocalUser from "../utils/getLocalStorage"
+import { Product } from "../types/types"
 
 export default function Page(){
+    const mainRef = useRef<HTMLBodyElement>(null)
     const[prohibited,setProhibited] = useState('s')
     const[withdrawal,setWithdrawal] = useState('')
     const[query,setQuery] = useState('')
     const[layout,setLayout] = useState('')
 
+    const [productName,setProductName] = useState('')
+    const [productBatch,setProductBatch] = useState('')
+    const [expireDate,setExpireDate] = useState('')
+    const [quantity,setQuantity] = useState('')
+
+
+    const [searchBatch,setSearchBatch] = useState('')
+    
+    const warningMessage = useRef<HTMLHeadingElement>(null)
+    const nameProduct = useRef<HTMLHeadingElement>(null)
+    const batchProduct = useRef<HTMLParagraphElement>(null)
+    const dateProduct = useRef<HTMLParagraphElement>(null)
+    const quantityProduct = useRef<HTMLParagraphElement>(null)
+
     async function registerProduct(ev:FormEvent) {
-    ev.preventDefault()  
+    ev.preventDefault()
+    const getUser = GetLocalUser()
+    const createProduct = await fetch(`http://localhost:3333/product`,{
+        method:'POST',
+        body:JSON.stringify(
+            {name:productName,quantity,expireDate,batch:productBatch,employee:getUser.email}
+        ),
+        headers:{
+            "Content-Type" : "application/json"
+        }
+    })
+    if(createProduct.status === 201){
+        alert('Produto criado com sucesso')
+        setProductName('')
+        setProductBatch('')
+        setExpireDate('')
+        setQuantity('')
+    }else{
+        alert('Erro na criação do produto')
+    }  
     }
 
     async function withdrawalProduct(ev:FormEvent) {
@@ -17,7 +53,23 @@ export default function Page(){
     }
 
     async function queryProduct(ev:FormEvent) {
-    ev.preventDefault()    
+    ev.preventDefault()   
+    const getProduct = await fetch('http://localhost:3333/products')
+    const converseProducts:Product[] = await getProduct.json()
+    const searchProduct = converseProducts.filter(product=>(product.batch === searchBatch))
+    if(searchProduct.length>0){
+        if(nameProduct.current && batchProduct.current && dateProduct.current && quantityProduct.current && warningMessage.current){
+            warningMessage.current.innerText  = ''
+            nameProduct.current.innerText = `Nome do produto : ${searchProduct[0].name}`
+            batchProduct.current.innerText = `Lote do produto : ${searchProduct[0].batch}`
+            dateProduct.current.innerText = `Prazo de validade : ${searchProduct[0].expireDate}`
+            quantityProduct.current.innerText = `Qauntidade de produto : ${searchProduct[0].quantity}`
+        }
+    }else{
+       if(warningMessage.current){
+        warningMessage.current.innerText  = 'Nenhum produto foi encontrado'
+       }
+    }
     }
 
 
@@ -58,13 +110,31 @@ export default function Page(){
         <div>
             <form onSubmit={(ev)=>registerProduct(ev)}>
             <label htmlFor="">Nome Produto</label>
-            <input type="text" />
+            <input 
+            type="text" 
+            value={productName}
+            onChange={(ev)=>setProductName(ev.currentTarget.value)}
+            />
             <label htmlFor="">Lote Produto</label>
-            <input type="text" />
+            <input 
+            type="text"
+            value={productBatch}
+            onChange={(ev)=>setProductBatch(ev.currentTarget.value)}
+            />
             <label htmlFor="">Data de Validade</label>
-            <input type="date" />
+            <input 
+            type="date" 
+            value={expireDate}
+            onChange={(ev)=>setExpireDate(ev.currentTarget.value)}
+            />
             <label htmlFor="">Quantidade</label>
-            <input type="number" name="" id="" />
+            <input 
+            type="number" 
+            name="" 
+            id="" 
+            value={quantity}
+            onChange={(ev)=>setQuantity(ev.currentTarget.value)}
+            />
             <button>REGISTRAR PRODUTO</button>
             </form>
         </div>
@@ -92,9 +162,25 @@ export default function Page(){
         <div>
             <form onSubmit={(ev)=>queryProduct(ev)}>
                 <label htmlFor="">Lote do produto</label>
-                <input type="text" />
+                <input 
+                type="text"
+                value={searchBatch}
+                onChange={(ev)=>setSearchBatch(ev.currentTarget.value)}
+                />
                 <button>CONSULTAR</button>
             </form>
+
+            <main ref={mainRef}>
+            <article>
+            <h1 ref={warningMessage}></h1>
+            <h4 ref={nameProduct}></h4>
+            <p ref={dateProduct}></p>
+            <p ref={batchProduct}></p>
+            <p ref={quantityProduct}></p>
+            <span></span>
+            </article>
+
+        </main>
         </div>
         ):(
         <div><h1></h1></div>
@@ -105,6 +191,8 @@ export default function Page(){
         ):(
         <div><h1></h1></div>
         )}
+
+      
         </>
     )
 }

@@ -13,6 +13,7 @@ export default function Home() {
   async function loginInSystem(ev:FormEvent){
     ev.preventDefault()
     if(email!=='' && password!==''){
+      localStorage.setItem('Usuario Logado',JSON.stringify({email,password}))
       setTimeout(() => {
         window.location.href = '/system'
       }, 2000);
