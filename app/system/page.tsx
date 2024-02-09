@@ -3,6 +3,7 @@
 import { FormEvent, useRef, useState } from "react"
 import GetLocalUser from "../utils/getLocalStorage"
 import { Product } from "../types/types"
+import style from '@/app/styles/systemPage.module.scss'
 
 export default function Page(){
     const mainRef = useRef<HTMLBodyElement>(null)
@@ -98,7 +99,7 @@ export default function Page(){
     }
 
     return(
-        <>
+        <main className={style.main}>
         <div>
             <button onClick={(ev)=>checkTab(ev)}>ENTRADA DE PRODUTO</button>
             <button onClick={(ev)=>checkTab(ev)}>RETIRADA DE PRODUTO</button>
@@ -193,6 +194,6 @@ export default function Page(){
         )}
 
       
-        </>
+        </main>
     )
 }

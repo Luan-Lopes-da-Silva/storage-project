@@ -1,0 +1,35 @@
+.main{
+    padding: 20px;
+    form{
+        padding: 20px;
+        background-color: white;
+        width: 720px;
+        border-radius: 0px 0px 12px 12px;
+        label,input{
+            display: block;
+        }
+        
+        label{
+            color: black;
+        }
+
+        input{
+            margin-top: 4px;
+            margin-bottom: 20px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            outline: none;
+            transition: .4s;
+
+            &:focus{
+                border: 1px solid red;
+            }
+        }
+
+        button{
+            padding: 8px 24px;
+            border-radius: 8px;
+            border: none;
+        }
+    }
+}
