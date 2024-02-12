@@ -90,7 +90,7 @@ export default function Page(){
         setWithdrawal('')
         setQuery(ev.currentTarget.innerText)
         setLayout('')
-    }else if(ev.currentTarget.innerText === 'CONSULTAR LAYOUT DO ESTOQUE') {
+    }else if(ev.currentTarget.innerText === 'CONSULTAR RETIRADAS DO ESTOQUE') {
         setProhibited('')
         setWithdrawal('')
         setQuery('')
@@ -104,7 +104,7 @@ export default function Page(){
             <button onClick={(ev)=>checkTab(ev)}>ENTRADA DE PRODUTO</button>
             <button onClick={(ev)=>checkTab(ev)}>RETIRADA DE PRODUTO</button>
             <button onClick={(ev)=>checkTab(ev)}>CONSULTA DE PRODUTO</button>
-            <button onClick={(ev)=>checkTab(ev)}>CONSULTAR LAYOUT DO ESTOQUE</button>
+            <button onClick={(ev)=>checkTab(ev)}>CONSULTAR RETIRADAS DO ESTOQUE</button>
         </div>
 
         {prohibited!==''?(

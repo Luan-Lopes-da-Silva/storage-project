@@ -4,6 +4,7 @@ import Image from "next/image";
 import styles from "./page.module.scss";
 import logoBrand from '@/public/logo.svg'
 import { FormEvent, useState } from "react";
+import { User } from "./types/types";
 
 export default function Home() {
   const [email,setEmail] = useState('')
@@ -12,14 +13,19 @@ export default function Home() {
 
   async function loginInSystem(ev:FormEvent){
     ev.preventDefault()
-    if(email!=='' && password!==''){
-      localStorage.setItem('Usuario Logado',JSON.stringify({email,password}))
-      setTimeout(() => {
-        window.location.href = '/system'
-      }, 2000);
+    const getDB = await fetch('http://localhost:3333/users')
+    const conversedUser:User[] = await getDB.json()
+    const searchEmail = conversedUser.filter(user=>(user.email === email))
+    const searchPassword = searchEmail.filter(user=>(user.password === password))
+    if(searchEmail.length>0 && searchPassword.length>0){
+    localStorage.setItem('Usuario Logado',JSON.stringify({email,name:searchPassword[0].name}))
+    setTimeout(() => {
+      window.location.href = '/system'
+    }, 1000);
     }else{
-      alert('Preencha todos os campos')
+    alert('Usuario não encontrado')
     }
+  
   }
   return (
     <>

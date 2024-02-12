@@ -9,7 +9,8 @@ export default function GetLocalUser():User{
     }else{
     const undefinedUser:User={
         email: 'undefined',
-        password:'undefined'
+        password:'undefined',
+        name: 'undefined'
     }   
     return undefinedUser 
     }
