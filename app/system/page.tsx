@@ -4,6 +4,10 @@ import { FormEvent, useRef, useState } from "react"
 import GetLocalUser from "../utils/getLocalStorage"
 import { Product } from "../types/types"
 import style from '@/app/styles/systemPage.module.scss'
+import Image from "next/image"
+import logo from '@/public/logo.svg'
+import menuIcon from '@/public/menu.svg'
+import profile from '@/public/account_circle_FILL0_wght400_GRAD0_opsz24 1.svg'
 
 export default function Page(){
     const mainRef = useRef<HTMLBodyElement>(null)
@@ -75,22 +79,22 @@ export default function Page(){
 
 
     function checkTab(ev:any) {
-    if(ev.currentTarget.innerText === 'ENTRADA DE PRODUTO') {
+    if(ev.currentTarget.innerText === 'CADASTRO DE PRODUTOS') {
         setProhibited(ev.currentTarget.innerText)
         setWithdrawal('')
         setQuery('')
         setLayout('')
-    }else if(ev.currentTarget.innerText === 'RETIRADA DE PRODUTO') {
+    }else if(ev.currentTarget.innerText === 'RETIRADA DE PRODUTOS') {
         setProhibited('')
         setWithdrawal(ev.currentTarget.innerText)
         setQuery('')
         setLayout('')
-    }else if(ev.currentTarget.innerText === 'CONSULTA DE PRODUTO') {
+    }else if(ev.currentTarget.innerText === 'CONSULTA DE PRODUTOS') {
         setProhibited('')
         setWithdrawal('')
         setQuery(ev.currentTarget.innerText)
         setLayout('')
-    }else if(ev.currentTarget.innerText === 'CONSULTAR RETIRADAS DO ESTOQUE') {
+    }else if(ev.currentTarget.innerText === 'CONSULTAR RETIRADAS') {
         setProhibited('')
         setWithdrawal('')
         setQuery('')
@@ -99,12 +103,38 @@ export default function Page(){
     }
 
     return(
+        <>
+        <header className={style.header}>
+            <nav>
+                <Image
+                width={100}
+                height={100}
+                alt="logo"
+                src={logo}
+                />
+
+                <div>
+                <Image
+                width={50}
+                height={50}
+                alt="profile"
+                src={profile}
+                />
+                <Image
+                width={50}
+                height={50}
+                alt="menu"
+                src={menuIcon}
+                />
+                </div>
+            </nav>
+        </header>
         <main className={style.main}>
-        <div>
-            <button onClick={(ev)=>checkTab(ev)}>ENTRADA DE PRODUTO</button>
-            <button onClick={(ev)=>checkTab(ev)}>RETIRADA DE PRODUTO</button>
-            <button onClick={(ev)=>checkTab(ev)}>CONSULTA DE PRODUTO</button>
-            <button onClick={(ev)=>checkTab(ev)}>CONSULTAR RETIRADAS DO ESTOQUE</button>
+        <div className={style.tabs}>
+            <button onClick={(ev)=>checkTab(ev)}>CADASTRO DE PRODUTOS</button>
+            <button onClick={(ev)=>checkTab(ev)}>RETIRADA DE PRODUTOS</button>
+            <button onClick={(ev)=>checkTab(ev)}>CONSULTA DE PRODUTOS</button>
+            <button onClick={(ev)=>checkTab(ev)}>CONSULTAR RETIRADAS</button>
         </div>
 
         {prohibited!==''?(
@@ -192,8 +222,7 @@ export default function Page(){
         ):(
         <div><h1></h1></div>
         )}
-
-      
         </main>
+        </>
     )
 }

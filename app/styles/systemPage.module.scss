@@ -1,35 +1,116 @@
+$primary:#000;
+$button-bg:#363636;
+$button-stroke:#565656;
+$active-button:#778DA9;
+$secondary:#FB5607;
+$danger:#C1121F;
+$sucess:#80ED99;
+$labels:#E5E5E5;
+$input:#1D3557;
+$input-stroke:#457B9D;
+$white:#FFFFFF;
+
+@font-face {
+    font-family: 'Montserrat-M';
+    src: url('../../public/fonts/Montserrat-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat-B';
+    src: url('../../public/fonts/Montserrat-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../../public/fonts/Roboto-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Abraham';
+    src: url('../../public/fonts/8\ Abraham\ Rounded\ Demo.otf');
+}
+
+@font-face {
+    font-family: 'Bebas';
+    src: url('../../public/fonts/BebasNeue.otf');
+}
+
+
+.header{
+    display: flex;
+    nav{
+        display: flex;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+        padding: 12px;
+    }
+}
 .main{
-    padding: 20px;
+    padding: 0px 20px;
+    .tabs{
+        button{
+            padding: 12px 24px;
+            margin: auto auto;
+    
+            background-color: $button-bg;
+            border: 2px solid $button-stroke;
+            transition: .4s;
+            text-transform: uppercase;
+            font-family: 'Montserrat-M';
+            cursor: pointer;
+    
+            &:hover{
+            background-color: $active-button;
+            }
+        }  
+    }
     form{
         padding: 20px;
-        background-color: white;
-        width: 720px;
+        width: 914px;
         border-radius: 0px 0px 12px 12px;
-        label,input{
+        input,label,button{
             display: block;
-        }
+        } 
         
-        label{
-            color: black;
+        input,select{
+            margin-top: 8px;
+            margin-bottom: 32px;
         }
-
-        input{
-            margin-top: 4px;
-            margin-bottom: 20px;
-            padding: 4px 8px;
+    
+        label{
+            font-size: 2rem;
+            font-family: 'Abraham';
+            color: $labels;
+        }
+    
+        input,select{
+            width: 400px;
+            padding: 8px 4px;
+            border: 2px solid $input-stroke;
             border-radius: 8px;
-            outline: none;
             transition: .4s;
-
+        
             &:focus{
-                border: 1px solid red;
+                border-color: $labels;
             }
         }
-
+    
         button{
-            padding: 8px 24px;
+            padding: 12px 24px;
+            margin: auto auto;
             border-radius: 8px;
-            border: none;
+            background-color: $button-bg;
+            border: 2px solid $button-stroke;
+            transition: .4s;
+            text-transform: uppercase;
+            font-family: 'Montserrat-M';
+            cursor: pointer;
+    
+            &:hover{
+            font-family: 'Montserrat-B';
+            background-color: $active-button;
+            }
         }
     }
 }

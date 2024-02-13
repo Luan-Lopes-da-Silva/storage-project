@@ -1,6 +1,8 @@
 'use client'
 import { FormEvent, useState } from "react";
-
+import style from '@/app/styles/registerPage.module.scss'
+import Image from "next/image";
+import bg from '@/public/kevin-mccutcheon-APDMfLHZiRA-unsplash.jpg'
 export default function Page(){
 const [name,setName] = useState('')
 const [email,setEmail] = useState('')
@@ -28,7 +30,15 @@ const [confirmPassword,setConfirmPassword] = useState('')
     }
     }
     return(
-        <>
+        <main className={style.main}>
+        <div>
+            <Image
+            width={800}
+            height={600}
+            alt="photo"
+            src={bg}
+            />
+        </div>
         <form onSubmit={(ev)=>createUser(ev)}>
         <label htmlFor="">Nome</label>
         <input 
@@ -54,8 +64,15 @@ const [confirmPassword,setConfirmPassword] = useState('')
         value={confirmPassword}
         onChange={(ev)=>setConfirmPassword(ev.currentTarget.value)}
         />
+
+        <label htmlFor="">Role</label>
+        <select name="" id="">
+            <option value="Escolha sua função">Escolha sua função</option>
+            <option value="ADM">Estoque</option>
+            <option value="PRODUCTION">Produção</option>
+        </select>
         <button>REGISTRAR</button>
         </form>
-        </>
+        </main>
     )
 }
