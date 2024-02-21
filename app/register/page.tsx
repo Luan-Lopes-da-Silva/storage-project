@@ -64,13 +64,6 @@ const [confirmPassword,setConfirmPassword] = useState('')
         value={confirmPassword}
         onChange={(ev)=>setConfirmPassword(ev.currentTarget.value)}
         />
-
-        <label htmlFor="">Role</label>
-        <select name="" id="">
-            <option value="Escolha sua função">Escolha sua função</option>
-            <option value="ADM">Estoque</option>
-            <option value="PRODUCTION">Produção</option>
-        </select>
         <button>REGISTRAR</button>
         </form>
         </main>

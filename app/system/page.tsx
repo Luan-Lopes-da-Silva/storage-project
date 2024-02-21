@@ -17,10 +17,13 @@ export default function Page(){
     const[layout,setLayout] = useState('')
 
     const [productName,setProductName] = useState('')
-    const [productBatch,setProductBatch] = useState('')
     const [expireDate,setExpireDate] = useState('')
     const [quantity,setQuantity] = useState('')
 
+
+    const [batchWithdraw,setBatchWithdraw] = useState('')
+    const [quantityWithdraw,setQuantityWithdraw] = useState(0)
+    const [employeeWithdraw,setEmployeeWithdraw] = useState('')
 
     const [searchBatch,setSearchBatch] = useState('')
     
@@ -30,13 +33,26 @@ export default function Page(){
     const dateProduct = useRef<HTMLParagraphElement>(null)
     const quantityProduct = useRef<HTMLParagraphElement>(null)
 
+    function generateAleatoryBatch(){
+        const hexCharacter = '0123456789ABCDEFGHIJKLMNOPRSTUVWXYZ'
+        let aleatoryHex = ''
+      
+        for (let i = 0; i<8; i++){
+          const aleatoryIndex = Math.floor(Math.random()* hexCharacter.length)
+          aleatoryHex += hexCharacter.charAt(aleatoryIndex)
+        }
+        return aleatoryHex
+      }
+    
+
     async function registerProduct(ev:FormEvent) {
     ev.preventDefault()
     const getUser = GetLocalUser()
+    const aleatoryBatch = generateAleatoryBatch()
     const createProduct = await fetch(`http://localhost:3333/product`,{
         method:'POST',
         body:JSON.stringify(
-            {name:productName,quantity,expireDate,batch:productBatch,employee:getUser.email}
+            {name:productName,quantity,expireDate,batch:aleatoryBatch,employee:getUser.email}
         ),
         headers:{
             "Content-Type" : "application/json"
@@ -45,7 +61,6 @@ export default function Page(){
     if(createProduct.status === 201){
         alert('Produto criado com sucesso')
         setProductName('')
-        setProductBatch('')
         setExpireDate('')
         setQuantity('')
     }else{
@@ -53,8 +68,39 @@ export default function Page(){
     }  
     }
 
-    async function withdrawalProduct(ev:FormEvent) {
+    async function withdrawProduct(ev:FormEvent) {
     ev.preventDefault()     
+    const getUser = GetLocalUser()
+    const dateNow = new Date()
+    const getProduct = await fetch(`http://localhost:3333/product/${batchWithdraw}`)
+    const conversedProduct:Product = await getProduct.json()
+    const withdrawProduct = await fetch(`http://localhost:3333/product/${batchWithdraw}`,{
+        method:'PUT',
+        body:JSON.stringify(
+            {quantity:Number(conversedProduct.quantity) - quantityWithdraw}
+        ),
+        headers:{
+            "Content-Type" : "application/json"
+        }
+    })
+    if(withdrawProduct.status === 200){
+        alert('Produto atualizado com sucesso')
+        setProductName('')
+        setExpireDate('')
+        setQuantity('')
+    }else{
+        alert('Erro na atualização do produto')
+    }  
+
+    const withdrawDb = await fetch(`http://localhost:3333/withdraw`,{
+        method:'POST',
+        body:JSON.stringify(
+            {employee:employeeWithdraw,responsible:getUser.name,productName:conversedProduct.name,dateAndHour:dateNow,quantity:quantityWithdraw}
+        ),
+        headers:{
+            "Content-Type" : "application/json"
+        }
+    })
     }
 
     async function queryProduct(ev:FormEvent) {
@@ -146,12 +192,6 @@ export default function Page(){
             value={productName}
             onChange={(ev)=>setProductName(ev.currentTarget.value)}
             />
-            <label htmlFor="">Lote Produto</label>
-            <input 
-            type="text"
-            value={productBatch}
-            onChange={(ev)=>setProductBatch(ev.currentTarget.value)}
-            />
             <label htmlFor="">Data de Validade</label>
             <input 
             type="date" 
@@ -175,13 +215,25 @@ export default function Page(){
 
         {withdrawal!==''?(
         <div>
-            <form onSubmit={(ev)=>withdrawalProduct(ev)}>
+            <form onSubmit={(ev)=>withdrawProduct(ev)}>
             <label htmlFor="">Lote do Produto</label>
-            <input type="text" />
+            <input 
+            type="text"
+            value={batchWithdraw}
+            onChange={(ev)=>setBatchWithdraw(ev.currentTarget.value)}
+            />
             <label htmlFor="">Quantidade do produto</label>
-            <input type="number" />
+            <input 
+            type="number"
+            value={quantityWithdraw}
+            onChange={(ev)=>setQuantityWithdraw(Number(ev.currentTarget.value))}
+            />
             <label htmlFor="">Responsavel pela retirada</label>
-            <input type="text" />
+            <input 
+            type="text"
+            value={employeeWithdraw}
+            onChange={(ev)=>setEmployeeWithdraw(ev.currentTarget.value)}
+            />
             <button>RETIRAR</button>
             </form>
         </div>
