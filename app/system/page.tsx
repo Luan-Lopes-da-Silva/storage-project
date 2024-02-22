@@ -2,7 +2,7 @@
 
 import { FormEvent, useRef, useState } from "react"
 import GetLocalUser from "../utils/getLocalStorage"
-import { Product } from "../types/types"
+import { Product, Withdraws } from "../types/types"
 import style from '@/app/styles/systemPage.module.scss'
 import Image from "next/image"
 import logo from '@/public/logo.svg'
@@ -11,6 +11,7 @@ import profile from '@/public/account_circle_FILL0_wght400_GRAD0_opsz24 1.svg'
 
 export default function Page(){
     const mainRef = useRef<HTMLBodyElement>(null)
+    const tableRef = useRef<HTMLTableElement>(null)
     const[prohibited,setProhibited] = useState('s')
     const[withdrawal,setWithdrawal] = useState('')
     const[query,setQuery] = useState('')
@@ -26,6 +27,8 @@ export default function Page(){
     const [employeeWithdraw,setEmployeeWithdraw] = useState('')
 
     const [searchBatch,setSearchBatch] = useState('')
+
+    const [dateOrBatch,setDateOrBatch] = useState('')
     
     const warningMessage = useRef<HTMLHeadingElement>(null)
     const nameProduct = useRef<HTMLHeadingElement>(null)
@@ -74,33 +77,53 @@ export default function Page(){
     const dateNow = new Date()
     const getProduct = await fetch(`http://localhost:3333/product/${batchWithdraw}`)
     const conversedProduct:Product = await getProduct.json()
-    const withdrawProduct = await fetch(`http://localhost:3333/product/${batchWithdraw}`,{
-        method:'PUT',
-        body:JSON.stringify(
-            {quantity:Number(conversedProduct.quantity) - quantityWithdraw}
-        ),
-        headers:{
-            "Content-Type" : "application/json"
-        }
-    })
-    if(withdrawProduct.status === 200){
-        alert('Produto atualizado com sucesso')
-        setProductName('')
-        setExpireDate('')
-        setQuantity('')
-    }else{
-        alert('Erro na atualização do produto')
-    }  
+    const day = dateNow.getDate()
+    let month = dateNow.getMonth()
+    month = month+1
+    const year = dateNow.getFullYear()
+    const formatedDay = day.toString().padStart(2,'0')
+    const formatedMonth = month.toString().padStart(2,'0')
+    const formatedDate = formatedDay + '/' + formatedMonth + '/' + year
+    const hour = dateNow.getHours()
+    const minutes = dateNow.getMinutes()
+    const formatedHour = hour.toString().padStart(2,'0')
+    const formartedMinutes = minutes.toString().padStart(2,'0')
+    const formatedFullHour = formatedHour + ':' + formartedMinutes
 
-    const withdrawDb = await fetch(`http://localhost:3333/withdraw`,{
-        method:'POST',
-        body:JSON.stringify(
-            {employee:employeeWithdraw,responsible:getUser.name,productName:conversedProduct.name,dateAndHour:dateNow,quantity:quantityWithdraw}
-        ),
-        headers:{
-            "Content-Type" : "application/json"
-        }
-    })
+    if(Number(conversedProduct.quantity)===0){
+    alert('Produtos desse lote acabaram!!')
+    }else if(quantityWithdraw>Number(conversedProduct.quantity)){
+    alert('Quantidade maior do que o disponivel no estoque!!')
+    setQuantityWithdraw(Number(conversedProduct.quantity))
+    }else{
+        const withdrawProduct = await fetch(`http://localhost:3333/product/${batchWithdraw}`,{
+            method:'PUT',
+            body:JSON.stringify(
+                {quantity:Number(conversedProduct.quantity) - quantityWithdraw}
+            ),
+            headers:{
+                "Content-Type" : "application/json"
+            }
+        })
+        if(withdrawProduct.status === 200){
+            alert('Produto atualizado com sucesso')
+            setProductName('')
+            setExpireDate('')
+            setQuantity('')
+        }else{
+            alert('Erro na atualização do produto')
+        }  
+    
+        const withdrawDb = await fetch(`http://localhost:3333/withdraw`,{
+            method:'POST',
+            body:JSON.stringify(
+                {employee:employeeWithdraw,responsible:getUser.name,productName:conversedProduct.name,date:formatedDate,quantity:quantityWithdraw,hour:formatedFullHour,batch:batchWithdraw}
+            ),
+            headers:{
+                "Content-Type" : "application/json"
+            }
+        })
+    }
     }
 
     async function queryProduct(ev:FormEvent) {
@@ -145,6 +168,63 @@ export default function Page(){
         setWithdrawal('')
         setQuery('')
         setLayout(ev.currentTarget.innerText)
+    }
+    }
+
+    async function checkWithdraws(ev:FormEvent) {
+    ev.preventDefault()
+    const withdrawsDb = await fetch('http://localhost:3333/withdraws')
+    const conversedDb:Withdraws[] = await withdrawsDb.json()
+    if(dateOrBatch.match(/\d{2}\/\d{1,}\/\d{4}/g)){
+        const filterForData = conversedDb.filter(withdraw=>(withdraw.date === dateOrBatch)) 
+        for(let i=0; i<filterForData.length;i++){
+        const rowRef = document.createElement('tr') 
+        const tdName = document.createElement('td')
+        tdName.innerText = filterForData[i].productName
+        const tdBatch = document.createElement('td')
+        tdBatch.innerText = filterForData[i].batch
+        const tdQuantity = document.createElement('td')
+        tdQuantity.innerText = filterForData[i].quantity
+        const tdStockEmployee = document.createElement('td')
+        tdStockEmployee.innerText = filterForData[i].responsible
+        const tdEmployee = document.createElement('td')
+        tdEmployee.innerText = filterForData[i].employee
+        const tdDate = document.createElement('td')
+        tdDate.innerText = filterForData[i].date
+        const tdHour = document.createElement('td')
+        tdHour.innerText = filterForData[i].hour
+
+        rowRef.append(tdName,tdBatch,tdQuantity,tdStockEmployee,tdEmployee,tdDate,tdHour)
+
+        if(tableRef.current){
+            tableRef.current.appendChild(rowRef)
+        }
+    }
+    }else{
+        const filterForBatch = conversedDb.filter(withdraw=>(withdraw.batch === dateOrBatch))    
+        for(let i=0; i<filterForBatch.length;i++){
+            const rowRef = document.createElement('tr') 
+            const tdName = document.createElement('td')
+            tdName.innerText = filterForBatch[i].productName
+            const tdBatch = document.createElement('td')
+            tdBatch.innerText = filterForBatch[i].batch
+            const tdQuantity = document.createElement('td')
+            tdQuantity.innerText = filterForBatch[i].quantity
+            const tdStockEmployee = document.createElement('td')
+            tdStockEmployee.innerText = filterForBatch[i].responsible
+            const tdEmployee = document.createElement('td')
+            tdEmployee.innerText = filterForBatch[i].employee
+            const tdDate = document.createElement('td')
+            tdDate.innerText = filterForBatch[i].date
+            const tdHour = document.createElement('td')
+            tdHour.innerText = filterForBatch[i].hour
+    
+            rowRef.append(tdName,tdBatch,tdQuantity,tdStockEmployee,tdEmployee,tdDate,tdHour)
+    
+            if(tableRef.current){
+                tableRef.current.appendChild(rowRef)
+            }
+        }  
     }
     }
 
@@ -194,7 +274,7 @@ export default function Page(){
             />
             <label htmlFor="">Data de Validade</label>
             <input 
-            type="date" 
+            type="text" 
             value={expireDate}
             onChange={(ev)=>setExpireDate(ev.currentTarget.value)}
             />
@@ -270,7 +350,27 @@ export default function Page(){
         )}
 
         {layout!==''?(
-        <div><h1>DESENHO DO ESTOQUE</h1></div>
+        <div>
+            <form onSubmit={(ev)=>checkWithdraws(ev)}>
+                <label htmlFor="">Lote do produto ou data de retirada</label>
+                <input 
+                type="text" 
+                value={dateOrBatch}
+                onChange={(ev)=>setDateOrBatch(ev.currentTarget.value)}
+                />
+                <button>PESQUISAR</button>
+            </form>
+            <table ref={tableRef}>
+                <tr>
+                    <td>Nome do Produto</td>
+                    <td>Lote do Produto</td>
+                    <td>Funcionario do estoque</td>
+                    <td>Solicitante</td>
+                    <td>Data do pedido</td>
+                    <td>Horario do pedido</td>
+                </tr>
+            </table>
+        </div>
         ):(
         <div><h1></h1></div>
         )}

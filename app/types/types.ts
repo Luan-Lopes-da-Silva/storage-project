@@ -12,3 +12,15 @@ export type Product = {
     employee:string,
     quantity:string
 }
+
+
+export type Withdraws = {
+    _id: 'string',
+    employee:'string',
+    responsible:'string',
+    quantity:'string',
+    productName:'string',
+    batch:'string',
+    date:'string',
+    hour:'string'
+}
