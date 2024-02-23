@@ -11,7 +11,7 @@ import profile from '@/public/account_circle_FILL0_wght400_GRAD0_opsz24 1.svg'
 
 export default function Page(){
     const mainRef = useRef<HTMLBodyElement>(null)
-    const tableRef = useRef<HTMLTableElement>(null)
+    const tableRef = useRef<HTMLDivElement>(null)
     const[prohibited,setProhibited] = useState('s')
     const[withdrawal,setWithdrawal] = useState('')
     const[query,setQuery] = useState('')
@@ -176,55 +176,198 @@ export default function Page(){
     const withdrawsDb = await fetch('http://localhost:3333/withdraws')
     const conversedDb:Withdraws[] = await withdrawsDb.json()
     if(dateOrBatch.match(/\d{2}\/\d{1,}\/\d{4}/g)){
-        const filterForData = conversedDb.filter(withdraw=>(withdraw.date === dateOrBatch)) 
-        for(let i=0; i<filterForData.length;i++){
-        const rowRef = document.createElement('tr') 
-        const tdName = document.createElement('td')
-        tdName.innerText = filterForData[i].productName
-        const tdBatch = document.createElement('td')
-        tdBatch.innerText = filterForData[i].batch
-        const tdQuantity = document.createElement('td')
-        tdQuantity.innerText = filterForData[i].quantity
-        const tdStockEmployee = document.createElement('td')
-        tdStockEmployee.innerText = filterForData[i].responsible
-        const tdEmployee = document.createElement('td')
-        tdEmployee.innerText = filterForData[i].employee
-        const tdDate = document.createElement('td')
-        tdDate.innerText = filterForData[i].date
-        const tdHour = document.createElement('td')
-        tdHour.innerText = filterForData[i].hour
-
-        rowRef.append(tdName,tdBatch,tdQuantity,tdStockEmployee,tdEmployee,tdDate,tdHour)
-
+        const filterForData = conversedDb.filter(withdraw=>(withdraw.date === dateOrBatch))  
         if(tableRef.current){
-            tableRef.current.appendChild(rowRef)
-        }
-    }
+            const tableElement = tableRef.current.querySelector('table')
+            if(tableElement){
+            tableRef.current.removeChild(tableElement)
+            if(filterForData.length<1){
+            const message = 'Nenhuma retirada foi feita nessa data'
+            tableRef.current.append(message)
+            }else{
+                const table = document.createElement('table')
+                const headerRow = document.createElement('tr')
+                const headerName = document.createElement('td')
+                headerName.innerText = 'Nome do Produto'
+                const headerBatch = document.createElement('td')
+                headerBatch.innerText = 'Lote do Produto'
+                const headerEmployee = document.createElement('td')
+                headerEmployee.innerText = 'Funcionario do Estoque'
+                const headerOrderEmployee = document.createElement('td')
+                headerOrderEmployee.innerText = 'Solicitante'
+                const headerDate = document.createElement('td')
+                headerDate.innerText = 'Data do Pedido'
+                const headerHour = document.createElement('td')
+                headerHour.innerText = 'Horario do Pedido'
+                headerRow.append(headerName,headerBatch,headerEmployee,headerOrderEmployee,headerDate,headerHour)
+                table.appendChild(headerRow)
+    
+                for(let i=0; i<filterForData.length;i++){
+                const trData = document.createElement('tr')
+                const tdName = document.createElement('td')
+                tdName.innerText = filterForData[i].productName
+                const tdBatch = document.createElement('td') 
+                tdBatch.innerText = filterForData[i].batch
+                const tdEmployee = document.createElement('td')
+                tdEmployee.innerText = filterForData[i].responsible
+                const tdOrderEmployee = document.createElement('td')
+                tdOrderEmployee.innerText = filterForData[i].employee
+                const tdDate = document.createElement('td')  
+                tdDate.innerText = filterForData[i].date
+                const tdHour = document.createElement('td')
+                tdHour.innerText = filterForData[i].hour
+                trData.append(tdName,tdBatch,tdEmployee,tdOrderEmployee,tdDate,tdHour)
+                table.append(trData)
+                }
+                tableRef.current.append(table)        
+            }
+            }else{
+            const table = document.createElement('table')
+            const headerRow = document.createElement('tr')
+            const headerName = document.createElement('td')
+            headerName.innerText = 'Nome do Produto'
+            const headerBatch = document.createElement('td')
+            headerBatch.innerText = 'Lote do Produto'
+            const headerEmployee = document.createElement('td')
+            headerEmployee.innerText = 'Funcionario do Estoque'
+            const headerOrderEmployee = document.createElement('td')
+            headerOrderEmployee.innerText = 'Solicitante'
+            const headerDate = document.createElement('td')
+            headerDate.innerText = 'Data do Pedido'
+            const headerHour = document.createElement('td')
+            headerHour.innerText = 'Horario do Pedido'
+            headerRow.append(headerName,headerBatch,headerEmployee,headerOrderEmployee,headerDate,headerHour)
+            table.appendChild(headerRow)
+            
+            if(filterForData.length<1){
+            const message = document.createElement('h2')
+            message.innerText = 'Nenhuma retirada aconteceu nessa data'
+            tableRef.current.append(message)
+            }else{
+                const h2 = tableRef.current.querySelector('h2')
+                if(h2){
+                    tableRef.current.removeChild(h2)
+                    for(let i=0; i<filterForData.length;i++){
+                        const trData = document.createElement('tr')
+                        const tdName = document.createElement('td')
+                        tdName.innerText = filterForData[i].productName
+                        const tdBatch = document.createElement('td') 
+                        tdBatch.innerText = filterForData[i].batch
+                        const tdEmployee = document.createElement('td')
+                        tdEmployee.innerText = filterForData[i].responsible
+                        const tdOrderEmployee = document.createElement('td')
+                        tdOrderEmployee.innerText = filterForData[i].employee
+                        const tdDate = document.createElement('td')  
+                        tdDate.innerText = filterForData[i].date
+                        const tdHour = document.createElement('td')
+                        tdHour.innerText = filterForData[i].hour
+                        trData.append(tdName,tdBatch,tdEmployee,tdOrderEmployee,tdDate,tdHour)
+                        table.append(trData)
+                        }
+                        tableRef.current.append(table)
+                } else{
+                    for(let i=0; i<filterForData.length;i++){
+                        const trData = document.createElement('tr')
+                        const tdName = document.createElement('td')
+                        tdName.innerText = filterForData[i].productName
+                        const tdBatch = document.createElement('td') 
+                        tdBatch.innerText = filterForData[i].batch
+                        const tdEmployee = document.createElement('td')
+                        tdEmployee.innerText = filterForData[i].responsible
+                        const tdOrderEmployee = document.createElement('td')
+                        tdOrderEmployee.innerText = filterForData[i].employee
+                        const tdDate = document.createElement('td')  
+                        tdDate.innerText = filterForData[i].date
+                        const tdHour = document.createElement('td')
+                        tdHour.innerText = filterForData[i].hour
+                        trData.append(tdName,tdBatch,tdEmployee,tdOrderEmployee,tdDate,tdHour)
+                        table.append(trData)
+                        }
+                        tableRef.current.append(table)
+                }
+                }
+                }
+            }
+            
     }else{
         const filterForBatch = conversedDb.filter(withdraw=>(withdraw.batch === dateOrBatch))    
-        for(let i=0; i<filterForBatch.length;i++){
-            const rowRef = document.createElement('tr') 
+        if(tableRef.current){
+            const tableElement = tableRef.current.querySelector('table')
+            if(tableElement){
+            tableRef.current.removeChild(tableElement)
+            const table = document.createElement('table')
+            const headerRow = document.createElement('tr')
+            const headerName = document.createElement('td')
+            headerName.innerText = 'Nome do Produto'
+            const headerBatch = document.createElement('td')
+            headerBatch.innerText = 'Lote do Produto'
+            const headerEmployee = document.createElement('td')
+            headerEmployee.innerText = 'Funcionario do Estoque'
+            const headerOrderEmployee = document.createElement('td')
+            headerOrderEmployee.innerText = 'Solicitante'
+            const headerDate = document.createElement('td')
+            headerDate.innerText = 'Data do Pedido'
+            const headerHour = document.createElement('td')
+            headerHour.innerText = 'Horario do Pedido'
+            headerRow.append(headerName,headerBatch,headerEmployee,headerOrderEmployee,headerDate,headerHour)
+            table.appendChild(headerRow)
+
+            for(let i=0; i<filterForBatch.length;i++){
+            const trData = document.createElement('tr')
             const tdName = document.createElement('td')
             tdName.innerText = filterForBatch[i].productName
-            const tdBatch = document.createElement('td')
+            const tdBatch = document.createElement('td') 
             tdBatch.innerText = filterForBatch[i].batch
-            const tdQuantity = document.createElement('td')
-            tdQuantity.innerText = filterForBatch[i].quantity
-            const tdStockEmployee = document.createElement('td')
-            tdStockEmployee.innerText = filterForBatch[i].responsible
             const tdEmployee = document.createElement('td')
-            tdEmployee.innerText = filterForBatch[i].employee
-            const tdDate = document.createElement('td')
+            tdEmployee.innerText = filterForBatch[i].responsible
+            const tdOrderEmployee = document.createElement('td')
+            tdOrderEmployee.innerText = filterForBatch[i].employee
+            const tdDate = document.createElement('td')  
             tdDate.innerText = filterForBatch[i].date
             const tdHour = document.createElement('td')
             tdHour.innerText = filterForBatch[i].hour
-    
-            rowRef.append(tdName,tdBatch,tdQuantity,tdStockEmployee,tdEmployee,tdDate,tdHour)
-    
-            if(tableRef.current){
-                tableRef.current.appendChild(rowRef)
+            trData.append(tdName,tdBatch,tdEmployee,tdOrderEmployee,tdDate,tdHour)
+            table.append(trData)
             }
-        }  
+            tableRef.current.append(table)
+            }else{
+            const table = document.createElement('table')
+            const headerRow = document.createElement('tr')
+            const headerName = document.createElement('td')
+            headerName.innerText = 'Nome do Produto'
+            const headerBatch = document.createElement('td')
+            headerBatch.innerText = 'Lote do Produto'
+            const headerEmployee = document.createElement('td')
+            headerEmployee.innerText = 'Funcionario do Estoque'
+            const headerOrderEmployee = document.createElement('td')
+            headerOrderEmployee.innerText = 'Solicitante'
+            const headerDate = document.createElement('td')
+            headerDate.innerText = 'Data do Pedido'
+            const headerHour = document.createElement('td')
+            headerHour.innerText = 'Horario do Pedido'
+            headerRow.append(headerName,headerBatch,headerEmployee,headerOrderEmployee,headerDate,headerHour)
+            table.appendChild(headerRow)
+
+            for(let i=0; i<filterForBatch.length;i++){
+            const trData = document.createElement('tr')
+            const tdName = document.createElement('td')
+            tdName.innerText = filterForBatch[i].productName
+            const tdBatch = document.createElement('td') 
+            tdBatch.innerText = filterForBatch[i].batch
+            const tdEmployee = document.createElement('td')
+            tdEmployee.innerText = filterForBatch[i].responsible
+            const tdOrderEmployee = document.createElement('td')
+            tdOrderEmployee.innerText = filterForBatch[i].employee
+            const tdDate = document.createElement('td')  
+            tdDate.innerText = filterForBatch[i].date
+            const tdHour = document.createElement('td')
+            tdHour.innerText = filterForBatch[i].hour
+            trData.append(tdName,tdBatch,tdEmployee,tdOrderEmployee,tdDate,tdHour)
+            table.append(trData)
+            }
+            tableRef.current.append(table)
+            }
+        }
     }
     }
 
@@ -360,16 +503,8 @@ export default function Page(){
                 />
                 <button>PESQUISAR</button>
             </form>
-            <table ref={tableRef}>
-                <tr>
-                    <td>Nome do Produto</td>
-                    <td>Lote do Produto</td>
-                    <td>Funcionario do estoque</td>
-                    <td>Solicitante</td>
-                    <td>Data do pedido</td>
-                    <td>Horario do pedido</td>
-                </tr>
-            </table>
+            <div ref={tableRef}>
+            </div>
         </div>
         ):(
         <div><h1></h1></div>

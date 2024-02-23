@@ -48,6 +48,25 @@ $white:#FFFFFF;
 }
 .main{
     padding: 0px 20px;
+
+    div{
+        table{
+            text-align: center;
+            background-color: red;
+            border-top: 2px solid white;
+            border-right: 2px solid white;
+            border-left: 2px solid white;
+            tr{
+                td+td{
+                    border-left: 2px solid white;
+                }
+                td{
+                    border-bottom: 2px solid white;
+                    padding: 12px;   
+                }
+            }
+        }
+    }
     .tabs{
         button{
             padding: 12px 24px;
