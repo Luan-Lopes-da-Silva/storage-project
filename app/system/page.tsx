@@ -311,7 +311,6 @@ export default function Page(){
             headerHour.innerText = 'Horario do Pedido'
             headerRow.append(headerName,headerBatch,headerEmployee,headerOrderEmployee,headerDate,headerHour)
             table.appendChild(headerRow)
-
             for(let i=0; i<filterForBatch.length;i++){
             const trData = document.createElement('tr')
             const tdName = document.createElement('td')
@@ -348,28 +347,59 @@ export default function Page(){
             headerRow.append(headerName,headerBatch,headerEmployee,headerOrderEmployee,headerDate,headerHour)
             table.appendChild(headerRow)
 
+            if(filterForBatch.length<1){
+            const message = document.createElement('h2')
+            message.innerText = 'Nenhum produto com esse lote foi registrado'
+            tableRef.current.append(message)
+            }else{
+            const h2 = tableRef.current.querySelector('h2')
+            if(h2){
+            tableRef.current.removeChild(h2)
             for(let i=0; i<filterForBatch.length;i++){
-            const trData = document.createElement('tr')
-            const tdName = document.createElement('td')
-            tdName.innerText = filterForBatch[i].productName
-            const tdBatch = document.createElement('td') 
-            tdBatch.innerText = filterForBatch[i].batch
-            const tdEmployee = document.createElement('td')
-            tdEmployee.innerText = filterForBatch[i].responsible
-            const tdOrderEmployee = document.createElement('td')
-            tdOrderEmployee.innerText = filterForBatch[i].employee
-            const tdDate = document.createElement('td')  
-            tdDate.innerText = filterForBatch[i].date
-            const tdHour = document.createElement('td')
-            tdHour.innerText = filterForBatch[i].hour
-            trData.append(tdName,tdBatch,tdEmployee,tdOrderEmployee,tdDate,tdHour)
-            table.append(trData)
+                const trData = document.createElement('tr')
+                const tdName = document.createElement('td')
+                tdName.innerText = filterForBatch[i].productName
+                const tdBatch = document.createElement('td') 
+                tdBatch.innerText = filterForBatch[i].batch
+                const tdEmployee = document.createElement('td')
+                tdEmployee.innerText = filterForBatch[i].responsible
+                const tdOrderEmployee = document.createElement('td')
+                tdOrderEmployee.innerText = filterForBatch[i].employee
+                const tdDate = document.createElement('td')  
+                tdDate.innerText = filterForBatch[i].date
+                const tdHour = document.createElement('td')
+                tdHour.innerText = filterForBatch[i].hour
+                trData.append(tdName,tdBatch,tdEmployee,tdOrderEmployee,tdDate,tdHour)
+                table.append(trData)
             }
-            tableRef.current.append(table)
+                tableRef.current.append(table)
+            }else{
+                for(let i=0; i<filterForBatch.length;i++){
+                    const trData = document.createElement('tr')
+                    const tdName = document.createElement('td')
+                    tdName.innerText = filterForBatch[i].productName
+                    const tdBatch = document.createElement('td') 
+                    tdBatch.innerText = filterForBatch[i].batch
+                    const tdEmployee = document.createElement('td')
+                    tdEmployee.innerText = filterForBatch[i].responsible
+                    const tdOrderEmployee = document.createElement('td')
+                    tdOrderEmployee.innerText = filterForBatch[i].employee
+                    const tdDate = document.createElement('td')  
+                    tdDate.innerText = filterForBatch[i].date
+                    const tdHour = document.createElement('td')
+                    tdHour.innerText = filterForBatch[i].hour
+                    trData.append(tdName,tdBatch,tdEmployee,tdOrderEmployee,tdDate,tdHour)
+                    table.append(trData)
+                    }
+                    tableRef.current.append(table)
+            }
+            }
+            }
+                
             }
         }
     }
-    }
+    
 
     return(
         <>
@@ -513,3 +543,4 @@ export default function Page(){
         </>
     )
 }
+
