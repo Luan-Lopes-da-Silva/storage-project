@@ -35,6 +35,7 @@ export default function Page(){
     const batchProduct = useRef<HTMLParagraphElement>(null)
     const dateProduct = useRef<HTMLParagraphElement>(null)
     const quantityProduct = useRef<HTMLParagraphElement>(null)
+    const refArticle = useRef<HTMLBodyElement>(null)
 
     function generateAleatoryBatch(){
         const hexCharacter = '0123456789ABCDEFGHIJKLMNOPRSTUVWXYZ'
@@ -132,16 +133,19 @@ export default function Page(){
     const converseProducts:Product[] = await getProduct.json()
     const searchProduct = converseProducts.filter(product=>(product.batch === searchBatch))
     if(searchProduct.length>0){
-        if(nameProduct.current && batchProduct.current && dateProduct.current && quantityProduct.current && warningMessage.current){
+        if(nameProduct.current && batchProduct.current && dateProduct.current && quantityProduct.current && warningMessage.current && refArticle.current){
             warningMessage.current.innerText  = ''
             nameProduct.current.innerText = `Nome do produto : ${searchProduct[0].name}`
             batchProduct.current.innerText = `Lote do produto : ${searchProduct[0].batch}`
             dateProduct.current.innerText = `Prazo de validade : ${searchProduct[0].expireDate}`
             quantityProduct.current.innerText = `Qauntidade de produto : ${searchProduct[0].quantity}`
+            refArticle.current.style.display = 'flex'
+            console.log('ola')
         }
     }else{
-       if(warningMessage.current){
+       if(warningMessage.current && refArticle.current){
         warningMessage.current.innerText  = 'Nenhum produto foi encontrado'
+        refArticle.current.style.display = 'none'
        }
     }
     }
@@ -507,7 +511,7 @@ export default function Page(){
             </form>
 
             <main ref={mainRef}>
-            <article>
+            <article ref={refArticle}>
             <h1 ref={warningMessage}></h1>
             <h4 ref={nameProduct}></h4>
             <p ref={dateProduct}></p>

@@ -49,19 +49,34 @@ $white:#FFFFFF;
 .main{
     padding: 0px 20px;
 
+    article{
+    display: none;
+    background-color: $input;
+    flex-direction: column;
+    gap: 12px;
+    width: max-content;
+    padding: 40px;
+    border-radius: 12px;
+    color: $white;
+    font-family: 'Roboto';
+    font-size: 1.3rem;
+    }
+
     div{
         table{
             text-align: center;
-            background-color: red;
-            border-top: 2px solid white;
-            border-right: 2px solid white;
-            border-left: 2px solid white;
+            background-color: $input;
+            border-top: 2px solid $input-stroke;
+            border-right: 2px solid $input-stroke;
+            border-left: 2px solid $input-stroke;
+            color: $white;
+            font-family: 'Montserrat-B';
             tr{
                 td+td{
-                    border-left: 2px solid white;
+                    border-left: 2px solid $input-stroke;
                 }
                 td{
-                    border-bottom: 2px solid white;
+                    border-bottom: 2px solid $input-stroke;
                     padding: 12px;   
                 }
             }
