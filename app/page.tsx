@@ -5,6 +5,7 @@ import styles from "./page.module.scss";
 import logoBrand from '@/public/logo.svg'
 import { FormEvent, useState } from "react";
 import { User } from "./types/types";
+import bg from '@/public/kevin-mccutcheon-APDMfLHZiRA-unsplash.jpg'
 
 export default function Home() {
   const [email,setEmail] = useState('')
@@ -30,12 +31,14 @@ export default function Home() {
   return (
     <>
     <main className={styles.main}>
+    <div>
     <Image
-    width={400}
-    height={400}
-    src={logoBrand}
-    alt="Logo brand"
+    width={800}
+    height={800}
+    src={bg}
+    alt="BG"
     />
+    </div>
     <form onSubmit={(ev)=>loginInSystem(ev)}>
       <label htmlFor="email">Email</label>
       <input 
